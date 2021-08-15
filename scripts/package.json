@@ -1,0 +1,22 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sync-to-cms.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LinFeng1997",
+  "license": "ISC",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^2.6.1",
+    "glob": "^7.1.7",
+    "gray-matter": "^4.0.3"
+  },
+  "eslintConfig": {
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "requireConfigFile": "false"
+    }
+  }
+}
