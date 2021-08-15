@@ -42,17 +42,97 @@ async function getDocument() {
 /**
  * 插入云数据库文档数据
  */
-async function addDocuments(documents) {
+async function addDocuments(data) {
   const db = app.database();
-  const result = await db.collection(DOCUMENT).add(documents);
+  const oldDocs = await db
+    .collection(DOCUMENT)
+    .where({
+      type: 'webpack',
+    })
+    .field({ hash: true, path: true })
+    .limit(200)
+    .get();
 
-  console.log('result', result);
-  if (result.code) {
-    throw new Error(
-      `插入「文档」失败, 错误码是${result.code}: ${result.message}`
-    );
+  const oldHash = getDocsHash(oldDocs.data);
+  const newHash = getDocsHash(data);
+
+  const addDocs = [];
+  const updateDocs = [];
+  const deleteDocs = [];
+
+  data.forEach((doc) => {
+    const path = doc.path;
+    // add，path not match, new instead of old
+    if (!oldHash[path] && newHash[path]) {
+      addDocs.push(doc);
+    }
+    // update，path match but hash non-match
+    else if (
+      oldHash[path] &&
+      newHash[path] &&
+      oldHash[path].hash !== newHash[path].hash
+    ) {
+      updateDocs.push({
+        _id: oldHash[path]._id,
+        ...doc,
+      });
+    }
+  });
+
+  oldDocs.data.forEach((doc) => {
+    const path = doc.path;
+
+    // delete，path not match, old instead of instead
+    if (!newHash[path]) {
+      deleteDocs.push(doc);
+    }
+  });
+
+  // console.log("addDocs", addDocs)
+  // console.log("updateDocs", updateDocs)
+  // console.log("deleteDocs", deleteDocs)
+
+  const transaction = await db.startTransaction();
+
+  if (addDocs.length) {
+    const addResult = await transaction.collection(DOCUMENT).add(addDocs);
+    console.log('addResult', addResult.ids || addResult.id); // 打印添加的docId
   }
-  return result;
+
+  for (let i = 0; i < updateDocs.length; i++) {
+    const updateDoc = updateDocs[i];
+    const id = updateDoc._id;
+    delete updateDoc._id;
+
+    const updateResult = await transaction
+      .collection(DOCUMENT)
+      .doc(id)
+      .update(updateDoc);
+
+    console.log('updateResult', updateResult.updated); // 更新的条数
+  }
+
+  for (let i = 0; i < deleteDocs.length; i++) {
+    const deleteDoc = deleteDocs[i];
+
+    const deleteResult = await transaction
+      .collection(DOCUMENT)
+      .doc(deleteDoc._id)
+      .delete();
+
+    console.log('deleteResult', deleteResult.deleted); // 删除成功的条数
+  }
+
+  // debug 时就回滚
+  // await transaction.rollback();
+  await transaction.commit();
+}
+
+function getDocsHash(docs) {
+  return docs.reduce((pre, cur) => {
+    pre[cur.path] = cur;
+    return pre;
+  }, {});
 }
 
 /**
@@ -106,3 +186,32 @@ async function addSidebar(sidebar) {
 module.exports.getDocument = getDocument;
 module.exports.addDocuments = addDocuments;
 module.exports.addSidebar = addSidebar;
+
+// async function test() {
+//   const db = app.database();
+//   const result = await db
+//     .collection(DOCUMENT)
+//     .where({
+//       type: 'webpack',
+//     })
+//     .limit(200)
+//     .field({ hash: true, path: true })
+//     .get();
+//   if (result.code) {
+//     throw new Error(
+//       `获取「数据」失败, 错误码是${result.code}: ${result.message}`
+//     );
+//   }
+//
+//   // 删除文档
+//   const res = await db
+//     .collection(DOCUMENT)
+//     .where({
+//       type: 'webpack',
+//     })
+//     .remove();
+//   console.log(res.deleted); // 打印删除的文档数量
+//
+//   console.log('result:', result.data.length);
+// }
+// test();
