@@ -60,11 +60,15 @@ function getData(file) {
     .update(JSON.stringify(json.data) + content)
     .digest('hex');
 
+  let docPath =
+    `webpack/` + path.relative(cwd, file).split('.').slice(0, -1).join('.');
+
+  docPath = docPath.replace(/\/index$/i, '');
+
   return {
     title: json.data.title,
     content,
-    path:
-      `webpack/` + path.relative(cwd, file).split('.').slice(0, -1).join('.'),
+    path: docPath,
     frontMatter: json.data,
     hash,
     type: 'webpack',
