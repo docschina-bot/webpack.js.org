@@ -4,14 +4,21 @@
   "description": "",
   "main": "sync-to-cms.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "sync": "node sync-to-cms.js",
+    "postinstall": "patch-package"
   },
   "author": "LinFeng1997",
   "license": "ISC",
   "dependencies": {
     "@cloudbase/node-sdk": "^2.6.1",
+    "@mdpress/markdown": "^1.0.0-rc.18",
+    "@mdpress/shared-utils": "^1.0.0-rc.18",
+    "markdown-it-attrs": "^4.0.0",
     "glob": "^7.1.7",
     "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "patch-package": "^6.4.7"
   },
   "eslintConfig": {
     "parser": "@babel/eslint-parser",

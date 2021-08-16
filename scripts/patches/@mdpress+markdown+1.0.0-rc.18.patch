@@ -1,0 +1,28 @@
+diff --git a/node_modules/@mdpress/markdown/index.js b/node_modules/@mdpress/markdown/index.js
+index 37027cd..3d2b509 100755
+--- a/node_modules/@mdpress/markdown/index.js
++++ b/node_modules/@mdpress/markdown/index.js
+@@ -14,6 +14,7 @@ const hoistScriptStylePlugin = require('./lib/hoist');
+ const convertRouterLinkPlugin = require('./lib/link');
+ const snippetPlugin = require('./lib/snippet');
+ const emojiPlugin = require('markdown-it-emoji');
++const attrsPlugin = require('markdown-it-attrs');
+ const anchorPlugin = require('markdown-it-anchor');
+ const tocPlugin = require('markdown-it-table-of-contents');
+ const {
+@@ -79,6 +80,15 @@ module.exports = (markdown = {}) => {
+     .use(emojiPlugin)
+     .end()
+ 
++    .plugin("Attrs")
++    .use(attrsPlugin,[{
++      // optional, these are default options
++      leftDelimiter: '{',
++      rightDelimiter: '}',
++      allowedAttributes: []  // empty array = all attributes are allowed
++    }])
++    .end()
++
+     .plugin(PLUGINS.ANCHOR)
+     .use(anchorPlugin, [Object.assign({
+       slugify,
