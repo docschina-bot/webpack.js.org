@@ -108,18 +108,26 @@ function getSearchData(doc) {
   return data;
 }
 
-async function syncAlgolia(documents) {
-  let sum = 0;
-  documents.forEach((doc) => {
-    const data = getSearchData(doc);
+async function syncAlgolia(param) {
+  const { addDocs, updateDocs, deleteDocs } = param;
 
-    // console.log('data',data);
-    sum += data.length;
+  // console.log('a,u,d',addDocs, updateDocs, deleteDocs);
 
-    index.addObjects(data);
-  });
+  // add
+  addRecordToSearch(addDocs);
 
-  console.info(`sync success: ${sum} items`);
+  // delete
+
+  // update
+}
+
+function addRecordToSearch(docs) {
+  let data = docs.reduce((res, doc) => {
+    return res.concat(getSearchData(doc));
+  }, []);
+  index.addObjects(data);
+
+  console.info(`add record to search success: ${data.length} items`);
 }
 
 module.exports.getSearchData = getSearchData;

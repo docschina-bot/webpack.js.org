@@ -1,5 +1,6 @@
 // provider
 const cloudbase = require('@cloudbase/node-sdk');
+const { syncAlgolia } = require('./sync-to-search');
 // Todo: 写进 Github 环境变量里
 const config = {
   secretId: 'AKIDXsxmKcdNq3ze2A1aste8LHxLTKvFI4Yp', // 前往「腾讯云控制台」-「访问密钥」获取
@@ -92,6 +93,10 @@ async function addDocuments(data) {
   // console.log("updateDocs", updateDocs)
   // console.log("deleteDocs", deleteDocs)
 
+  if (!addDocs.length && !updateDocs.length && !deleteDocs.length) {
+    return;
+  }
+
   const transaction = await db.startTransaction();
 
   if (addDocs.length) {
@@ -126,6 +131,12 @@ async function addDocuments(data) {
   // debug 时就回滚
   // await transaction.rollback();
   await transaction.commit();
+
+  await syncAlgolia({
+    addDocs,
+    updateDocs,
+    deleteDocs,
+  });
 }
 
 function getDocsHash(docs) {
@@ -186,32 +197,3 @@ async function addSidebar(sidebar) {
 module.exports.getDocument = getDocument;
 module.exports.addDocuments = addDocuments;
 module.exports.addSidebar = addSidebar;
-
-// async function test() {
-//   const db = app.database();
-//   const result = await db
-//     .collection(DOCUMENT)
-//     .where({
-//       type: 'webpack',
-//     })
-//     .limit(200)
-//     .field({ hash: true, path: true })
-//     .get();
-//   if (result.code) {
-//     throw new Error(
-//       `获取「数据」失败, 错误码是${result.code}: ${result.message}`
-//     );
-//   }
-//
-//   // 删除文档
-//   const res = await db
-//     .collection(DOCUMENT)
-//     .where({
-//       type: 'webpack',
-//     })
-//     .remove();
-//   console.log(res.deleted); // 打印删除的文档数量
-//
-//   console.log('result:', result.data.length);
-// }
-// test();
