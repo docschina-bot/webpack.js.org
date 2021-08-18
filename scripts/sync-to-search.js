@@ -126,7 +126,7 @@ function addRecordToSearch(docs) {
   }, []);
   index.addObjects(data);
 
-  console.info(`add record to search success: ${data.length} items`);
+  console.info(`add record to search success: ${docs.length} docs`);
 }
 
 function deleteRecordToSearch(docs) {
