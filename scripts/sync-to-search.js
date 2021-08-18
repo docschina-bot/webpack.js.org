@@ -113,13 +113,11 @@ async function syncAlgolia(param) {
 
   // console.log('a,u,d',addDocs, updateDocs, deleteDocs);
 
-  // add
   addRecordToSearch(addDocs);
 
-  // delete
   deleteRecordToSearch(deleteDocs);
 
-  // update
+  updateRecordToSearch(updateDocs);
 }
 
 function addRecordToSearch(docs) {
@@ -141,6 +139,25 @@ function deleteRecordToSearch(docs) {
     .then(() => {
       // done
       console.info(`delete record to search success: ${docs.length} docs`);
+    });
+}
+
+function updateRecordToSearch(docs) {
+  let data = docs.reduce((res, doc) => {
+    return res.concat(getSearchData(doc));
+  }, []);
+
+  const facetFilters = docs.map((doc) => `url:${getUrl(doc.path)}`);
+
+  // 先删后加
+  index
+    .deleteBy({
+      facetFilters,
+    })
+    .then(() => {
+      // done
+      index.addObjects(data);
+      console.info(`update record to search success: ${docs.length} docs`);
     });
 }
 
