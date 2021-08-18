@@ -95,7 +95,7 @@ function getSearchData(doc) {
       },
       type: doc.type,
       content: segment.content,
-      url: `https://docschina.org/docs/${doc.path}/`,
+      url: getUrl(doc.path),
       anchor: getAnchor(segment),
     };
     item.objectID = crypto
@@ -117,6 +117,7 @@ async function syncAlgolia(param) {
   addRecordToSearch(addDocs);
 
   // delete
+  deleteRecordToSearch(deleteDocs);
 
   // update
 }
@@ -128,6 +129,23 @@ function addRecordToSearch(docs) {
   index.addObjects(data);
 
   console.info(`add record to search success: ${data.length} items`);
+}
+
+function deleteRecordToSearch(docs) {
+  const facetFilters = docs.map((doc) => `url:${getUrl(doc.path)}`);
+
+  index
+    .deleteBy({
+      facetFilters,
+    })
+    .then(() => {
+      // done
+      console.info(`delete record to search success: ${docs.length} docs`);
+    });
+}
+
+function getUrl(path) {
+  return `https://docschina.org/docs/${path}/`;
 }
 
 module.exports.getSearchData = getSearchData;
