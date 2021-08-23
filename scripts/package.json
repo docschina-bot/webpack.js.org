@@ -15,7 +15,8 @@
     "@mdpress/shared-utils": "^1.0.0-rc.18",
     "markdown-it-attrs": "^4.0.0",
     "glob": "^7.1.7",
-    "gray-matter": "^4.0.3"
+    "gray-matter": "^4.0.3",
+    "algoliasearch": "^4.10.4"
   },
   "devDependencies": {
     "patch-package": "^6.4.7"
