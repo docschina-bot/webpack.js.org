@@ -94,6 +94,12 @@ module.exports = (env) =>
           'loaders/url-loader': 'https://v4.webpack.js.org/loaders/url-loader',
           'loaders/file-loader':
             'https://v4.webpack.js.org/loaders/file-loader',
+          'loaders/null-loader':
+            'https://v4.webpack.js.org/loaders/null-loader/',
+          'loaders/mocha-loader':
+            'https://v4.webpack.js.org/loaders/mocha-loader/',
+          'loaders/istanbul-instrumenter-loader':
+            'https://v4.webpack.js.org/loaders/istanbul-instrumenter-loader/',
         },
       }),
       new CopyWebpackPlugin({
@@ -119,7 +125,7 @@ module.exports = (env) =>
         description: 'webpack 中文文档 web 应用',
         background_color: '#2b3a42',
         theme_color: '#2b3a42',
-        display: 'fullscreen',
+        display: 'minimal-ui',
         inject: false,
         fingerprints: false,
         ios: true,

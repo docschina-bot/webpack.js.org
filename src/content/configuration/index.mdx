@@ -25,15 +25,17 @@ translators:
 
 webpack 开箱即用，可以无需使用任何配置文件。然而，webpack 会假定项目的入口起点为 `src/index.js`，然后会在 `dist/main.js` 输出结果，并且在生产环境开启压缩和优化。
 
+T> [createapp.dev](https://createapp.dev/webpack) 是一个创建自定义 webpack 配置的在线工具。它允许你选择各种特性，其将会被添加到最后的配置文件中。它也会基于生成的 webpack 配置初始化一个示例项目，你可以在浏览器中查看该项目并且下载。
+
 通常你的项目还需要继续扩展此能力，为此你可以在项目根目录下创建一个 `webpack.config.js` 文件，然后 webpack 会自动使用它。
 
 下面指定了所有可用的配置选项。
 
 T> 刚开始学习 webpack？请查看我们提供的指南，从 webpack 一些 [核心概念](/concepts) 开始学习吧！
 
-## 使用不同的配置文件 {#use-different-configuration-file}
+## 使用不同的配置文件 $#use-different-configuration-file$
 
-如果出于某些原因，需要根据特定情况使用不同的配置文件，则可以通过在命令行中使用 `--config` flag 修改此配置文件名称。
+如果出于某些原因，需要根据特定情况使用不同的配置文件，则可以通过在命令行中使用 `--config` 标志修改。
 
 **package.json**
 
@@ -43,7 +45,7 @@ T> 刚开始学习 webpack？请查看我们提供的指南，从 webpack 一些
 }
 ```
 
-## 选项 {#options}
+## 选项 $#options$
 
 点击下面配置代码中每个选项的名称，跳转到详细的文档。还要注意，带有箭头的项目可以展开，以显示更多示例，在某些情况下可以看到高级配置。
 
@@ -875,7 +877,7 @@ module.exports = {
     proxy: { // proxy URLs to backend development server
       '/api': 'http://localhost:3000'
     },
-    contentBase: path.join(__dirname, 'public'), // boolean | string | array, static file location
+    static: path.join(__dirname, 'public'), // boolean | string | array, static file location
     compress: true, // enable gzip compression
     historyApiFallback: true, // true for index.html upon 404, object for multiple paths
     hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
@@ -1008,7 +1010,7 @@ module.exports = {
         minChunks: 1,
         // minimum number of chunks a module must be in
         enforceSizeThreshold: 100000,
-        // ignore when following criterias when size of modules
+        // ignore when following criteria when size of modules
         // is above this threshold
         minSize: 20000,
         // size of modules must be above this threshold
@@ -1173,4 +1175,3 @@ found 0 vulnerabilities
 Congratulations! Your new webpack configuration file has been created!
 ```
 
-[createapp.dev - 在浏览器中创建 webpack 配置](https://createapp.dev/webpack)，是一个用于创建自定义 webpack 配置的在线工具。它可以选择各种功能，这些功能将被组合并添加到生成的配置文件中。此外，它还会基于提供的 webpack 配置生成示例项目，可以在浏览器中查看并下载。

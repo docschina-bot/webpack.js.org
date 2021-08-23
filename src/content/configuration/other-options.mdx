@@ -30,7 +30,7 @@ translators:
 
 W> 寻求帮助：这个页面还在更新中，如果你发现本页面内有描述不准确或者不完整，请在 [webpack 的文档仓库](https://github.com/webpack/webpack.js.org)中创建 issue 或者 pull request
 
-## amd {#amd}
+## amd $#amd$
 
 `object` `boolean: false`
 
@@ -54,7 +54,7 @@ module.exports = {
 此选项允许将模块查找的键(key)设置为真值(truthy value)。
 发生这种情况时，webpack 中的 AMD 支持将忽略定义的名称。
 
-## bail {#bail}
+## bail $#bail$
 
 `boolean = false`
 
@@ -73,380 +73,7 @@ module.exports = {
 
 W> 避免在 [`watch`](/configuration/watch) 模式下使用 `ball` 选项，因为这将会致使 webpack 在发现错误时尽快退出。
 
-## cache {#cache}
-
-`boolean` `object`
-
-缓存生成的 webpack 模块和 chunk，来改善构建速度。`cache` 会在[`开发` 模式](/configuration/mode/#mode-development)被设置成 `type: 'memory'` 而且在 [`生产` 模式](/configuration/mode/#mode-production) 中被禁用。 `cache: true` 与 `cache: { type: 'memory' }` 配置作用一致。 传入 `false` 会禁用缓存:
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  cache: false,
-};
-```
-
-当将 `cache.type` 设置为 `'filesystem'` 是会开放更多的可配置项。
-
-### cache.allowCollectingMemory
-
-收集在反序列化期间分配的未使用的内存，仅当 [`cache.type`](#cachetype) 设置为 `'filesystem'` 时生效。这需要将数据复制到更小的缓冲区中，并有性能成本。
-
-- Type: `boolean`
-  - It defaults to `false` in production mode and `true` in development mode.
-- <Badge text="5.35.0+" />
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  cache: {
-    type: 'filesystem',
-    allowCollectingMemory: true,
-  },
-};
-```
-
-### cache.buildDependencies {#cachebuilddependencies}
-
-`object`
-
-`cache.buildDependencies` 是一个针对构建的额外代码依赖的数组对象。webpack 将使用这些项和所有依赖项的哈希值来使文件系统缓存失效。
-
-默认是 `webpack/lib` 来获取 webpack 的所有依赖项。
-
-T> 推荐在 webpack 配置中设置 `cache.buildDependencies.config: [__filename]` 来获取最新配置以及所有依赖项。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  cache: {
-    buildDependencies: {
-      // This makes all dependencies of this file - build dependencies
-      config: [__filename],
-      // 默认情况下 webpack 与 loader 是构建依赖。
-    },
-  },
-};
-```
-
-### cache.cacheDirectory {#cachecachedirectory}
-
-`string`
-
-缓存的。默认为 `node_modules/.cache/webpack`。
-
-`cache.cacheDirectory` 选项仅当 [`cache.type`](#cachetype) 被设置成 `'filesystem'` 才可用。
-
-**webpack.config.js**
-
-```javascript
-const path = require('path');
-
-module.exports = {
-  //...
-  cache: {
-    type: 'filesystem',
-    cacheDirectory: path.resolve(__dirname, '.temp_cache'),
-  },
-};
-```
-
-W> 最终的缓存目标是 `cache.cacheDirectory` + `cache.name` 的混合.
-
-### cache.cacheLocation {#cachecachelocation}
-
-`string`
-
-缓存的路径。默认值为 `path.resolve(cache.cacheDirectory, cache.name)`.
-
-**webpack.config.js**
-
-```javascript
-const path = require('path');
-
-module.exports = {
-  //...
-  cache: {
-    type: 'filesystem',
-    cacheLocation: path.resolve(__dirname, '.test_cache'),
-  },
-};
-```
-
-### cache.hashAlgorithm {#cachehashalgorithm}
-
-`string`
-
-用于哈希生成的算法。详情请参阅 [Node.js crypto](https://nodejs.org/api/crypto.html)。默认值为 `md4`.
-
-`cache.hashAlgorithm` 选项仅当 [`cache.type`](#cachetype) 设置成 `'filesystem'` 才可配置。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  cache: {
-    type: 'filesystem',
-    hashAlgorithm: 'md4',
-  },
-};
-```
-
-### cache.idleTimeout {#cacheidletimeout}
-
-`number = 60000`
-
-时间以毫秒为单位。`cache.idleTimeout` 表示缓存存储发生的时间间隔。
-
-`cache.idleTimeout` 配置项仅在 [`cache.type`] `'filesystem'` 时生效。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //..
-  cache: {
-    type: 'filesystem',
-    idleTimeout: 60000,
-  },
-};
-```
-
-### cache.idleTimeoutAfterLargeChanges {#cacheidletimeoutafterlargechanges}
-
-`number = 1000`
-
-<Badge text="5.41.0+" />
-
-以毫秒为单位。`cache.idleTimeoutAfterLargeChanges` 是当检测到较大的更改时，缓存存储应在此之后发生的时间段。
-
-`cache.idleTimeoutAfterLargeChanges` 仅在 [`cache.type`](#cachetype) 设为 `'filesystem'` 时可用。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //..
-  cache: {
-    type: 'filesystem',
-    idleTimeoutAfterLargeChanges: 1000,
-  },
-};
-```
-
-### cache.idleTimeoutForInitialStore {#cacheidletimeoutforinitialstore}
-
-`number = 0`
-
-单位毫秒。 `cache.idleTimeoutForInitialStore` 是在初始缓存存储发生后的时间段。
-
-`cache.idleTimeoutForInitialStore` 配置项仅在 [`cache.type`] `'filesystem'` 时生效。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //..
-  cache: {
-    type: 'filesystem',
-    idleTimeoutForInitialStore: 0,
-  },
-};
-```
-
-### cache.managedPaths {#cachemanagedpaths}
-
-`[string] = ['./node_modules']`
-
-W> 已迁移到 [snapshot.managedPaths](#managedpaths)
-
-`cache.managedPaths` 是仅托管路径的包管理器数组。webpack 将避免将他们进行哈希和时间戳处理，假设版本是唯一的，并将其用作快照（用于内存和文件系统缓存）。
-
-### cache.maxAge {#cachemaxage}
-
-`number = 5184000000`
-
-<Badge text="5.30.0+" />
-
-允许未使用的缓存留在文件系统缓存中的时间（以毫秒为单位）；默认为一个月。
-
-`cache.maxAge` 仅在 [`cache.type`](#cachetype) 设置为 `'filesystem'` 时生效。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  // ...
-  cache: {
-    type: 'filesystem',
-    maxAge: 5184000000,
-  },
-};
-```
-
-### cache.maxGenerations {#cachemaxgenerations}
-
-`number`
-
-<Badge text="5.30.0+" />
-
-定义内存缓存中未使用的缓存项的生命周期。
-
-- `cache.maxGenerations: 1`: 在一次编译中未使用的缓存被删除。
-
-- `cache.maxGenerations: Infinity`: 缓存将永远保存。
-
-`cache.maxGenerations` 配置项仅在 [`cache.type`](#cachetype) 设置为 `'memory'` 时有效。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  // ...
-  cache: {
-    type: 'memory',
-    maxGenerations: Infinity,
-  },
-};
-```
-
-### cache.maxMemoryGenerations {#cachemaxMemorygenerations}
-
-`number`
-
-<Badge text="5.30.0+" />
-
-定义内存缓存中未使用的缓存项的生命周期。
-
-- `cache.maxMemoryGenerations: 0`: 持久化缓存不会使用额外的内存缓存。它只将项目缓存到内存中，直到它们被序列化到磁盘。一旦序列化，下一次读取将再次从磁盘反序列化它们。这种模式将最小化内存使用，但会带来性能成本。
-
-- `cache.maxMemoryGenerations: 1`: 这将从内存缓存中清除已序列化且在至少一次编译中未使用的项。当再次使用它们时，它们将从磁盘反序列化。这种模式将最小化内存使用量，同时仍将活动项保留在内存缓存中。
-
-- `cache.maxMemoryGenerations`: 大于 0 的小数字将为 GC 操作带来性能成本。它会随着数字的增加而降低。
-
-- `cache.maxMemoryGenerations`: `development` 模式下默认为 10，`production` 模式下默认为 `Infinity`。
-
-`cache.maxMemoryGenerations` 配置项仅在 [`cache.type`](#cachetype) 设置为 `'filesystem'` 时有效。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  // ...
-  cache: {
-    type: 'filesystem',
-    maxMemoryGenerations: Infinity,
-  },
-};
-```
-
-### cache.name {#cachename}
-
-`string`
-
-缓存的名称。不同的名字会导致不同的的共存的缓存。默认值为 `${config.name}-${config.mode}`。使用 `cache.name` 当你有多份配置的时候，是比较合理的因为会有配置会有独立的缓存。
-
-`cache.name` 选项仅当 [`cache.type`](#cachetype) 被设置成 `'filesystem'` 的时候可进行配置。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  cache: {
-    type: 'filesystem',
-    name: 'AppBuildCache',
-  },
-};
-```
-
-### cache.profile {#cacheprofile}
-
-`boolean = false`
-
-跟踪并记录各个 `'filesystem'` 缓存项的详细时间信息。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  cache: {
-    type: 'filesystem',
-    profile: true,
-  },
-};
-```
-
-### cache.store {#cachestore}
-
-`string = 'pack': 'pack'`
-
-`cache.store` 告诉 webpack 什么时候将数据存放在文件系统中。
-
-- `'pack'`: 当编译器闲置时候，将缓存数据都存放在一个文件中
-
-`cache.store` 选项仅当 [`cache.type`](#cachetype) 设置成 `'filesystem'` 才可配置。
-
-W> `pack` 是 webpack 5.0.x 起唯一支持的类型
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  cache: {
-    type: 'filesystem',
-    store: 'pack',
-  },
-};
-```
-
-### cache.type
-
-`string: 'memory' | 'filesystem'`
-
-将 `cache` 类型设置为内存或者文件系统。`memory` 选项很简单，它告诉 webpack 在内存中存储缓存，不允许额外的配置：
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  cache: {
-    type: 'memory',
-  },
-};
-```
-
-### cache.version {#cacheversion}
-
-`string = ''`
-
-缓存数据的版本。不同版本不会允许重用缓存和重载当前的内容。当配置以一种无法重用缓存的方式改变时，要更新缓存的版本。这会让缓存失效。
-
-`cache.version` 选项仅当 [`cache.type`](#cachetype) 设置成 `'filesystem'` 才可配置。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  cache: {
-    type: 'filesystem',
-    version: 'your_version',
-  },
-};
-```
-
-W> 在具有不同选项的调用之间不要共享缓存。
-
-## dependencies {#dependencies}
+## dependencies $#dependencies$
 
 `[string]`
 
@@ -476,7 +103,7 @@ module.exports = [
 ];
 ```
 
-## ignoreWarnings {#ignorewarnings}
+## ignoreWarnings $#ignorewarnings$
 
 `RegExp` `function (WebpackError, Compilation) => boolean` `{module?: RegExp, file?: RegExp, message?: RegExp}`
 
@@ -504,11 +131,154 @@ module.exports = {
 };
 ```
 
-## loader {#loader}
+## infrastructureLogging $#infrastructurelogging$
+
+用于基础设施水平的日志选项。
+
+`object = {}`
+
+### appendOnly $#appendonly$
+
+<Badge text="5.31.0+" />
+
+`boolean`
+
+将内容追加到现有输出中，而非更新现有输出，这对于展示状态信息来说非常有用。此选项仅在未提供自定义 [`console`](#console) 的情况下使用。
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  infrastructureLogging: {
+    appendOnly: true,
+    level: 'verbose',
+  },
+  plugins: [
+    (compiler) => {
+      const logger = compiler.getInfrastructureLogger('MyPlugin');
+      logger.status('first output'); // this line won't be overridden with `appendOnly` enabled
+      logger.status('second output');
+    },
+  ],
+};
+```
+
+### colors $#colors$
+
+<Badge text="5.31.0+" />
+
+`boolean`
+
+为基础设施日志启用带有颜色的输出。此选项仅在未提供自定义 [`console`](#console) 的情况下使用。
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  infrastructureLogging: {
+    colors: true,
+    level: 'verbose',
+  },
+  plugins: [
+    (compiler) => {
+      const logger = compiler.getInfrastructureLogger('MyPlugin');
+      logger.log('this output will be colorful');
+    },
+  ],
+};
+```
+
+### console $#console$
+
+<Badge text="5.31.0+" />
+
+`Console`
+
+为基础设施日志提供自定义方案。
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  infrastructureLogging: {
+    console: yourCustomConsole(),
+  },
+};
+```
+
+### debug $#debug$
+
+`string` `boolean = false` `RegExp` `function(name) => boolean` `[string, RegExp, function(name) => boolean]`
+
+开启特定日志比如插件(plugins)和加载器(loaders)的调试信息。 与 [`stats.loggingDebug`](/configuration/stats/#statsloggingdebug) 选项类似但仅仅对于基础设施而言。默认为 `false`。
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  infrastructureLogging: {
+    level: 'info',
+    debug: ['MyPlugin', /MyPlugin/, (name) => name.contains('MyPlugin')],
+  },
+};
+```
+
+### level $#level$
+
+`string = 'info' : 'none' | 'error' | 'warn' | 'info' | 'log' | 'verbose'`
+
+开启基础设施日志输出。与 [`stats.logging`](/configuration/stats/#statslogging) 选项类似但仅仅是对于基础设施而言。默认值为 `'info'`。
+
+可能的取值：
+
+- `'none'` - 禁用日志
+- `'error'` - 仅仅显示错误
+- `'warn'` - 仅仅显示错误与告警
+- `'info'` - 显示错误、告警与信息
+- `'log'` - 显示错误、告警，信息，日志信息，组别，清楚。 收缩的组别会在收缩的状态中被显示。
+- `'verbose'` - 输出所有日志除了调试与追踪。收缩的组别会在扩展的状态中被显示。
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  infrastructureLogging: {
+    level: 'info',
+  },
+};
+```
+
+### stream $#stream$
+
+<Badge text="5.31.0+" />
+
+`NodeJS.WritableStream = process.stderr`
+
+用于日志输出的流。默认为 `process.stderr`。此选项仅在未提供自定义 [`console`](#console) 的情况下使用。
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  infrastructureLogging: {
+    stream: process.stderr,
+  },
+};
+```
+
+T> 在 TTY 流的情况下，会启用 `colors` 并禁用 `appendOnly`，反之亦然。
+
+## loader
 
 `object`
 
-在 [loader 上下文](/api/loaders/#the-loader-context)中暴露自定义值。
+在 [loader 上下文](/api/loaders/#the-loader-context) 中暴露自定义值。
 
 例如，你可以在 loader 上下文中定义一个新变量：
 
@@ -537,13 +307,28 @@ module.exports = function (source) {
 
 T> 你可以覆盖 loader 上下文中的属性，因为 webpack 会将所有定义在 `loader` 中的属性负责到 loader 上下文中。
 
-## parallelism {#parallelism}
+## name $#name$
+
+`string`
+
+配置的名称。当加载不同的配置时会被使用。
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  name: 'admin-app',
+};
+```
+
+## parallelism $#parallelism$
 
 `number = 100`
 
 限制并行处理的模块数量。可以用于调优性能或获取更可靠的性能分析结果。
 
-## profile {#profile}
+## profile $#profile$
 
 `boolean`
 
@@ -554,7 +339,31 @@ T> 使用 [StatsPlugin](https://www.npmjs.com/package/stats-webpack-plugin) 可�
 T> 与 `parallelism: 1` 混用以达到更好的结果。
 需要注意的是，这样做也会减慢建造速度。
 
-## recordsPath {#recordspath}
+## recordsInputPath $#recordsinputpath$
+
+`string`
+
+指定读取最后一条记录的文件的名称。这可以用来重命名一个记录文件，可以查看下面的实例：
+
+## recordsOutputPath $#recordsoutputpath$
+
+`string`
+
+指定记录要写入的位置。以下示例描述了如何用这个选项和 `recordsInptuPaht` 来重命名一个记录文件：
+
+**webpack.config.js**
+
+```javascript
+const path = require('path');
+
+module.exports = {
+  //...
+  recordsInputPath: path.join(__dirname, 'records.json'),
+  recordsOutputPath: path.join(__dirname, 'newRecords.json'),
+};
+```
+
+## recordsPath $#recordspath$
 
 `string`
 
@@ -577,189 +386,7 @@ T> 注意，虽然这个文件是由编译器(compiler)生成的，但你可能�
 
 W> 设置 `recordsPath` 本质上会把 `recordsInputPath` 和 `recordsOutputPath` 都设置成相同的路径。通常来讲这也是符合逻辑的，除非你决定改变记录文件的名称。可以查看下面的实例：
 
-## recordsInputPath {#recordsinputpath}
-
-`string`
-
-指定读取最后一条记录的文件的名称。这可以用来重命名一个记录文件，可以查看下面的实例：
-
-## recordsOutputPath {#recordsoutputpath}
-
-`string`
-
-指定记录要写入的位置。以下示例描述了如何用这个选项和 `recordsInptuPaht` 来重命名一个记录文件：
-
-**webpack.config.js**
-
-```javascript
-const path = require('path');
-
-module.exports = {
-  //...
-  recordsInputPath: path.join(__dirname, 'records.json'),
-  recordsOutputPath: path.join(__dirname, 'newRecords.json'),
-};
-```
-
-## name {#name}
-
-`string`
-
-配置的名称。当加载不同的配置时会被使用。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  name: 'admin-app',
-};
-```
-
-## infrastructureLogging {#infrastructurelogging}
-
-用于基础设施水平的日志选项。
-
-`object = {}`
-
-### appendOnly {#appendonly}
-
-<Badge text="5.31.0+" />
-
-`boolean`
-
-将内容追加到现有输出中，而非更新现有输出，这对于展示状态信息来说非常有用。此选项仅在未提供自定义 [`console`](#console) 的情况下使用。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  infrastructureLogging: {
-    appendOnly: true,
-    level: 'verbose',
-  },
-  plugins: [
-    (compiler) => {
-      const logger = compiler.getInfrastructureLogger('MyPlugin');
-      logger.status('first output'); // this line won't be overridden with `appendOnly` enabled
-      logger.status('second output');
-    },
-  ],
-};
-```
-
-### colors {#colors}
-
-<Badge text="5.31.0+" />
-
-`boolean`
-
-为基础设施日志启用带有颜色的输出。此选项仅在未提供自定义 [`console`](#console) 的情况下使用。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  infrastructureLogging: {
-    colors: true,
-    level: 'verbose',
-  },
-  plugins: [
-    (compiler) => {
-      const logger = compiler.getInfrastructureLogger('MyPlugin');
-      logger.log('this output will be colorful');
-    },
-  ],
-};
-```
-
-### console {#console}
-
-<Badge text="5.31.0+" />
-
-`Console`
-
-为基础设施日志提供自定义方案。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  infrastructureLogging: {
-    console: yourCustomConsole(),
-  },
-};
-```
-
-### level {#level}
-
-`string`
-
-开启基础设施日志输出。与 [`stats.logging`](/configuration/stats/#statslogging) 选项类似但仅仅是对于基础设施而言。没有默认值提供。
-
-可能的取值：
-
-- `'none'` - 禁用日志
-- `'error'` - 仅仅显示错误
-- `'warn'` - 仅仅显示错误与告警
-- `'info'` - 显示错误、告警与信息
-- `'log'` - 显示错误、告警，信息，日志信息，组别，清楚。 收缩的组别会在收缩的状态中被显示。
-- `'verbose'` - 输出所有日志除了调试与追踪。收缩的组别会在扩展的状态中被显示。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  infrastructureLogging: {
-    level: 'info',
-  },
-};
-```
-
-### debug {#debug}
-
-`string` `RegExp` `function(name) => boolean` `[string, RegExp, function(name) => boolean]`
-
-开启特定日志比如插件(plugins)和加载器(loaders)的调试信息。 与 [`stats.loggingDebug`](/configuration/stats/#statsloggingdebug) 选项类似但仅仅对于基础设施而言。没有默认配置提供。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  infrastructureLogging: {
-    level: 'info',
-    debug: ['MyPlugin', /MyPlugin/, (name) => name.contains('MyPlugin')],
-  },
-};
-```
-
-### stream {#stream}
-
-<Badge text="5.31.0+" />
-
-`NodeJS.WritableStream = process.stderr`
-
-用于日志输出的流。默认为 `process.stderr`。此选项仅在未提供自定义 [`console`](#console) 的情况下使用。
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  infrastructureLogging: {
-    stream: process.stderr,
-  },
-};
-```
-
-T> 在 TTY 流的情况下，会启用 `colors` 并禁用 `appendOnly`，反之亦然。
-
-## snapshot {#snapshot}
+## snapshot $#snapshot$
 
 `object`
 
@@ -792,19 +419,7 @@ module.exports = {
 };
 ```
 
-### managedPaths {#managedpaths}
-
-`[string]`
-
-由包管理器管理的路径数组，可以信任它不会被修改。
-
-### immutablePaths {#immutable-paths}
-
-`[string]`
-
-由包管理器管理的路径数组，在其路径中包含一个版本或哈希，以便所有文件都是不可变的（immutable）。
-
-### buildDependencies {#build-dependencies}
+### buildDependencies $#build-dependencies$
 
 `object = { hash boolean = true, timestamp boolean = true }`
 
@@ -819,7 +434,20 @@ module.exports = {
 - `{ timestamp: true }`：对应本地开发缓存很用帮助。
 - `{ timestamp: true, hash: true }`：对于以上提到的两者都很有帮助。首先比较时间戳，这代价很低，因为 webpack 不需要读取文件来计算它们的哈希值。仅当时间戳相同时才会比较内容哈希，这对初始构建的性能影响很小。
 
-### module {#module}
+### immutablePaths $#immutable-paths$
+
+`[string]`
+
+由包管理器管理的路径数组，在其路径中包含一个版本或哈希，以便所有文件都是不可变的（immutable）。
+
+### managedPaths $#managedpaths$
+
+`[string]`
+
+由包管理器管理的路径数组，可以信任它不会被修改。
+
+
+### module $#module$
 
 `object = {hash boolean = true, timestamp boolean = true}`
 
@@ -828,7 +456,7 @@ module.exports = {
 - `hash`：比较内容哈希以判断无效。（比 `timestamp` 更昂贵，但更改的频率较低）。
 - `timestamp`：比较时间戳以确定无效。
 
-### resolve {#resolve}
+### resolve $#resolve$
 
 `object = {hash boolean = true, timestamp boolean = true}`
 
@@ -837,7 +465,7 @@ module.exports = {
 - `hash`：比较内容哈希以判断无效。（比 `timestamp` 更昂贵，但更改的频率较低）。
 - `timestamp`：比较时间戳以确定无效。
 
-### resolveBuildDependencies {#resolve-build-dependencies}
+### resolveBuildDependencies $#resolve-build-dependencies$
 
 `object = {hash boolean = true, timestamp boolean = true}`
 

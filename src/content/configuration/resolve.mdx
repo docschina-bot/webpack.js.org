@@ -26,7 +26,7 @@ translators:
 这些选项能设置模块如何被解析。webpack 提供合理的默认值，但是还是可能会修改一些解析的细节。
 关于 resolver 具体如何工作的更多解释说明，请查看[模块解析](/concepts/module-resolution)。
 
-## `resolve` {#resolve}
+## `resolve` $#resolve$
 
 `object`
 
@@ -43,7 +43,7 @@ module.exports = {
 };
 ```
 
-### `resolve.alias` {#resolvealias}
+### `resolve.alias` $#resolvealias$
 
 `object`
 
@@ -157,7 +157,7 @@ module.exports = {
 };
 ```
 
-### `resolve.aliasFields` {#resolvealiasfields}
+### `resolve.aliasFields` $#resolvealiasfields$
 
 `[string]: ['browser']`
 
@@ -175,11 +175,11 @@ module.exports = {
 };
 ```
 
-### `resolve.cacheWithContext` {#resolvecachewithcontext}
+### `resolve.cacheWithContext` $#resolvecachewithcontext$
 
 如果启用了不安全缓存，请在缓存键(cache key)中引入 `request.context`。这个选项被 [`enhanced-resolve`](https://github.com/webpack/enhanced-resolve/) 模块考虑在内。从 webpack 3.1.0 开始，在配置了 resolve 或 resolveLoader 插件时，解析缓存(resolve caching)中的上下文(context)会被忽略。这解决了性能衰退的问题。
 
-### resolve.conditionNames {@resolveconditionnames}
+### resolve.conditionNames $#resolveconditionnames$
 
 `string[]`
 
@@ -196,7 +196,7 @@ module.exports = {
 };
 ```
 
-### `resolve.descriptionFiles` {#resolvedescriptionfiles}
+### `resolve.descriptionFiles` $#resolvedescriptionfiles$
 
 `[string] = ['package.json']`
 
@@ -213,7 +213,7 @@ module.exports = {
 };
 ```
 
-### `resolve.enforceExtension` {#resolveenforceextension}
+### `resolve.enforceExtension` $#resolveenforceextension$
 
 `boolean = false`
 
@@ -231,26 +231,7 @@ module.exports = {
 };
 ```
 
-### `resolve.enforceModuleExtension` {#resolveenforcemoduleextension}
-
-`boolean = false`
-
-W> 在 webpack 5 中被废弃
-
-告知 webpack 是否要求模块使用后缀（例如加载器 loaders）。
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  resolve: {
-    enforceModuleExtension: false,
-  },
-};
-```
-
-### resolve.extensions {#resolveextensions}
+### resolve.extensions $#resolveextensions$
 
 `[string] = ['.js', '.json', '.wasm']`
 
@@ -284,7 +265,60 @@ module.exports = {
   },
 };
 
-### `resolve.mainFields` {#resolvemainfields}
+### resolve.fallback $#resolvefallback$
+
+当正常解析失败时，重定向模块请求。
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  resolve: {
+    fallback: {
+      abc: false, // do not include a polyfill for abc
+      xyz: path.resolve(__dirname, 'path/to/file.js'), // include a polyfill for xyz
+    },
+  },
+};
+```
+
+webpack 5 不再自动 polyfill Node.js 的核心模块，这意味着如果你在浏览器或类似的环境中运行的代码中使用它们，你必须从 NPM 中安装兼容的模块，并自己包含它们。以下是 webpack 在 webpack 5 之前使用过的 polyfill 包列表：
+
+```js
+module.exports = {
+  //...
+  resolve: {
+    fallback: {
+      assert: require.resolve('assert'),
+      buffer: require.resolve('buffer'),
+      console: require.resolve('console-browserify'),
+      constants: require.resolve('constants-browserify'),
+      crypto: require.resolve('crypto-browserify'),
+      domain: require.resolve('domain-browser'),
+      events: require.resolve('events'),
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      os: require.resolve('os-browserify/browser'),
+      path: require.resolve('path-browserify'),
+      punycode: require.resolve('punycode'),
+      process: require.resolve('process/browser'),
+      querystring: require.resolve('querystring-es3'),
+      stream: require.resolve('stream-browserify'),
+      string_decoder: require.resolve('string_decoder'),
+      sys: require.resolve('util'),
+      timers: require.resolve('timers-browserify'),
+      tty: require.resolve('tty-browserify'),
+      url: require.resolve('url'),
+      util: require.resolve('util'),
+      vm: require.resolve('vm-browserify'),
+      zlib: require.resolve('browserify-zlib'),
+    },
+  },
+};
+```
+
+### `resolve.mainFields` $#resolvemainfields$
 
 `[string]`
 
@@ -327,7 +361,7 @@ module.exports = {
 
 在我们 `import * as Upstream from 'upstream'` 时，这实际上会从 `browser` 属性解析文件。在这里 `browser` 属性是最优先选择的，因为它是 `mainFields` 的第一项。同时，由 webpack 打包的 Node.js 应用程序首先会尝试从 `module` 字段中解析文件。
 
-### `resolve.mainFiles` {#resolvemainfiles}
+### `resolve.mainFiles` $#resolvemainfiles$
 
 `[string] = ['index']`
 
@@ -344,7 +378,7 @@ module.exports = {
 };
 ```
 
-### `resolve.exportsFields` {#resolveexportsfields}
+### `resolve.exportsFields` $#resolveexportsfields$
 
 `[string] = ['exports']`
 
@@ -361,7 +395,7 @@ module.exports = {
 };
 ```
 
-### `resolve.modules` {#resolvemodules}
+### `resolve.modules` $#resolvemodules$
 
 `[string] = ['node_modules']`
 
@@ -400,7 +434,7 @@ module.exports = {
 };
 ```
 
-### `resolve.unsafeCache` {#resolveunsafecache}
+### `resolve.unsafeCache` $#resolveunsafecache$
 
 `RegExp` `[RegExp]` `boolean: true`
 
@@ -433,7 +467,7 @@ module.exports = {
 
 W> 修改缓存路径可能在极少数情况下导致失败。
 
-### `resolve.plugins` {#resolveplugins}
+### `resolve.plugins` $#resolveplugins$
 
 [`[Plugin]`](/plugins/)
 
@@ -451,7 +485,7 @@ module.exports = {
 };
 ```
 
-### `resolve.preferRelative` {#resolvepreferrelative}
+### `resolve.preferRelative` $#resolvepreferrelative$
 
 `boolean`
 
@@ -499,7 +533,7 @@ module.exports = {
 };
 ```
 
-### `resolve.symlinks` {#resolvesymlinks}
+### `resolve.symlinks` $#resolvesymlinks$
 
 `boolean = true`
 
@@ -518,7 +552,7 @@ module.exports = {
 };
 ```
 
-### `resolve.cachePredicate` {#resolvecachepredicate}
+### `resolve.cachePredicate` $#resolvecachepredicate$
 
 `function(module) => boolean`
 
@@ -539,7 +573,7 @@ module.exports = {
 };
 ```
 
-### `resolve.restrictions` {#resolverestrictions}
+### `resolve.restrictions` $#resolverestrictions$
 
 `[string, RegExp]`
 
@@ -556,7 +590,7 @@ module.exports = {
 };
 ```
 
-### `resolve.roots` {#resolveroots}
+### `resolve.roots` $#resolveroots$
 
 `[string]`
 
@@ -591,26 +625,7 @@ module.exports = {
 };
 ```
 
-### `resolve.fallback`
-
-`boolean`
-
-Redirect module requests when normal resolving fails.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  resolve: {
-    fallback: {
-      xyz: path.resolve(__dirname, 'path/to/file.js'),
-    },
-  },
-};
-```
-
-### resolve.byDependency {#resolvebydependency}
+### resolve.byDependency $#resolvebydependency$
 
 通过 module 请求类型来配置 resolve 选项。
 
@@ -636,7 +651,7 @@ module.exports = {
   };
   ```
 
-## `resolveLoader` {#resolveloader}
+## `resolveLoader` $#resolveloader$
 
 `object { modules [string] = ['node_modules'], extensions [string] = ['.js', '.json'], mainFields [string] = ['loader', 'main']}`
 
@@ -656,23 +671,4 @@ module.exports = {
 };
 ```
 
-T> 注意，这里你可以使用别名，并且其他特性类似于 resolve 对象。例如，`{ txt: 'raw-loader' }` 会使用 `raw-loader` 去 shim(填充) `txt!templates/demo.txt`。
-
-### `resolveLoader.moduleExtensions` {#resolveloadermoduleextensions}
-
-`[string]`
-
-W> 在 webpack 5 中被废弃
-
-解析 loader 时，用到扩展名(extensions)/后缀(suffixes)。从 webpack 2 开始，我们 [强烈建议](/migrate/3/#automatic-loader-module-name-extension-removed) 使用全名，例如 `example-loader`，以尽可能清晰。然而，如果你确实想省略 `-loader`，也就是说只使用 `example`，则可以使用此选项来实现：
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  resolveLoader: {
-    moduleExtensions: ['-loader'],
-  },
-};
-```
+T> 请注意你可以在这里使用别名和 resolve 中熟悉的其他特性。例如 `{ txt: 'raw-loader' }` 将会 shim `txt!templates/demo.txt` 使用 `raw-loader`。

@@ -1,0 +1,13 @@
+**[不使用配置](https://youtu.be/3Nv9muOkb6k?t=21293)** 或提供自定义的 **webpack.config.js**
+
+```js
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+};
+```

@@ -22,13 +22,16 @@ const Footer = () => (
 
       <section className="footer__middle">
         <Link to="/" className="footer__icon">
-          <img src={Icon} alt="webpack icon" />
+          <img src={Icon} alt="webpack icon" width={35} height={35} />
         </Link>
       </section>
 
       <section className="footer__right">
         <Link className="footer__link" to="https://webpack.threadless.com/">
           周边
+        </Link>
+        <Link className="footer__link" to="/awesome-webpack/">
+          Awesome webpack
         </Link>
         <Link className="footer__link" to="/glossary/">
           术语
@@ -46,8 +49,8 @@ const Footer = () => (
           更新日志
         </Link>
         <Link className="footer__link footer__license" to="/license">
-          <img alt="Creative Commons License" src={CC} />
-          <img alt="Creative Commons License" src={BY} />
+          <img alt="Creative Commons License" src={CC} width={25} height={25} />
+          <img alt="Creative Commons License" src={BY} width={25} height={25} />
         </Link>
       </section>
     </Container>

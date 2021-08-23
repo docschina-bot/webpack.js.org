@@ -35,16 +35,14 @@ import Favicon from '../../favicon.ico';
 import Logo from '../../assets/logo-on-white-bg.svg';
 import OgImage from '../../assets/icon-pwa-512x512.png';
 
-// Import Constants
-import { THEME, THEME_LOCAL_STORAGE_KEY } from '../../constants/theme';
-
 // Load Styling
 import '../../styles/index';
 import './Site.scss';
 
 // Load Content Tree
 import Content from '../../_content.json';
-import { useLocalStorage } from 'react-use';
+
+import clientSideRedirections from './clientSideRedirections';
 
 const mdxComponents = {
   Badge: Badge,
@@ -57,30 +55,11 @@ Site.propTypes = {
     pathname: PropTypes.string.isRequired,
     hash: PropTypes.string,
   }),
+  history: PropTypes.any,
   import: PropTypes.func,
 };
 function Site(props) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [theme, setTheme] = useLocalStorage(
-    THEME_LOCAL_STORAGE_KEY,
-    THEME.LIGHT
-  );
-
-  const applyTheme = (theme) => {
-    document.documentElement.setAttribute('data-theme', theme);
-    if (theme === THEME.DARK) {
-      document.documentElement.classList.add(THEME.DARK);
-    } else {
-      document.documentElement.classList.remove(THEME.DARK);
-    }
-  };
-  useEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
-
-  const switchTheme = (theme) => {
-    setTheme(theme);
-  };
 
   /**
    * Toggle the mobile sidebar
@@ -98,7 +77,7 @@ function Site(props) {
    */
   const _strip = (array) => {
     let anchorTitleIndex = array.findIndex(
-      (item) => item.name.toLowerCase() === 'index.md'
+      (item) => item.name.toLowerCase() === 'index.mdx'
     );
 
     if (anchorTitleIndex !== -1) {
@@ -130,7 +109,7 @@ function Site(props) {
       })
       .filter(
         (page) =>
-          page.title !== 'printable.md' && !page.content.includes('Printable')
+          page.title !== 'printable.mdx' && !page.content.includes('Printable')
       );
   };
 
@@ -168,7 +147,7 @@ function Site(props) {
     }
   }, []);
 
-  let { location } = props;
+  const { location, history } = props;
   let sections = extractSections(Content);
   let section = sections.find(({ url }) => location.pathname.startsWith(url));
   let pages = extractPages(Content);
@@ -198,6 +177,15 @@ function Site(props) {
   function enforceTrailingSlash(url) {
     return url.replace(/\/?$/, '/');
   }
+
+  // Enable client side redirection
+  // See https://github.com/webpack/webpack.js.org/pull/5146#discussion_r663510210
+  useEffect(() => {
+    const target = clientSideRedirections(location);
+    if (target) {
+      history.replace(target);
+    }
+  }, [location, history]);
 
   return (
     <MDXProvider components={mdxComponents}>
@@ -263,16 +251,15 @@ function Site(props) {
             pathname={location.pathname}
             hash={location.hash}
             toggleSidebar={_toggleSidebar}
-            theme={theme}
-            switchTheme={switchTheme}
             links={[
               {
                 content: '中文文档',
                 url: '/concepts/',
-                isActive: (url) =>
-                  /^\/(api|concepts|configuration|guides|loaders|migrate|plugins)/.test(
-                    url
-                  ),
+                isActive: (_, location) => {
+                  return /^\/(api|concepts|configuration|guides|loaders|migrate|plugins)/.test(
+                    location.pathname
+                  );
+                },
                 children: _strip(
                   sections.filter(
                     ({ name }) => excludeItems.includes(name) === false

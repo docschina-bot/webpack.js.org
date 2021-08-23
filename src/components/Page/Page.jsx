@@ -70,7 +70,7 @@ export default function Page(props) {
   let contentRender;
 
   if (typeof content === 'function') {
-    contentRender = content({}).props.children.slice(4); // Cut frontmatter information
+    contentRender = content({}).props.children;
     contentRender = Children.map(contentRender, (child) => {
       if (isValidElement(child)) {
         if (child.props.mdxType === 'pre') {
@@ -92,21 +92,14 @@ export default function Page(props) {
   }
   return (
     <section className="page">
-      <PageLinks page={rest} />
-
       <Markdown>
         <h1>{title}</h1>
 
         {contentRender}
 
-        {(previous || next) && (
-          <AdjacentPages previous={previous} next={next} />
-        )}
-
         {loadRelated && (
-          <div className="related__section">
-            <hr />
-            <h3>Further Reading</h3>
+          <div className="print:hidden">
+            <h2>Further Reading</h2>
             <ul>
               {related.map((link, index) => (
                 <li key={index}>
@@ -117,9 +110,14 @@ export default function Page(props) {
           </div>
         )}
 
+        <PageLinks page={rest} />
+
+        {(previous || next) && (
+          <AdjacentPages previous={previous} next={next} />
+        )}
+
         {loadTranslators && (
           <div className="contributors__section">
-            <hr />
             <h3>译者</h3>
             <Translators translators={translators} />
           </div>

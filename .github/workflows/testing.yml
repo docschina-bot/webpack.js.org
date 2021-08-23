@@ -1,0 +1,87 @@
+name: Ensure PR
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [14.x]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+
+      - run: yarn --frozen-lockfile
+      - run: yarn lint:js
+      - run: yarn lint:markdown
+
+  proseLint:
+    name: Proselint
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Vale
+        uses: errata-ai/vale-action@v1.4.2
+        with:
+          files: src/content
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  lintLinks:
+    name: Check Links
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [14.x]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+
+      - run: yarn
+
+      - name: Build site
+        run: yarn build
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - run: yarn lint:links
+
+  e2e:
+    name: End to End Testing
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [14.x]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+
+      - run: |
+          yarn
+          yarn cypress install
+          yarn cypress verify
+          yarn cypress:ci
