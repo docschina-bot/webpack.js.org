@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@cloudbase/node-sdk": "^2.6.1",
+    "@mdpress/core": "^1.0.0-rc.18",
     "@mdpress/markdown": "^1.0.0-rc.18",
     "@mdpress/shared-utils": "^1.0.0-rc.18",
     "markdown-it-attrs": "^4.0.0",
