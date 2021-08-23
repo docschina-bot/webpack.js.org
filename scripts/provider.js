@@ -1,10 +1,9 @@
 // provider
 const cloudbase = require('@cloudbase/node-sdk');
 const { syncAlgolia } = require('./sync-to-search');
-// Todo: 写进 Github 环境变量里
 const config = {
   secretId: 'AKIDXsxmKcdNq3ze2A1aste8LHxLTKvFI4Yp', // 前往「腾讯云控制台」-「访问密钥」获取
-  secretKey: '1lERt50f39yWnnWyB7m9G6fxxhAON6Zm', // 前往「腾讯云控制台」-「访问密钥」获取
+  secretKey: process.env.TENCENT_SECRET_KEY, // 前往「腾讯云控制台」-「访问密钥」获取
   env: 'docschina-live-10765e', // 前往「腾讯云控制台」-「云开发 CloudBase」获取
 };
 const app = cloudbase.init(config);

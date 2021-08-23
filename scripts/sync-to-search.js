@@ -4,8 +4,7 @@ const createMarkdownIt = require('@mdpress/markdown');
 const _slugify = require('@mdpress/shared-utils/lib/slugify');
 
 const md = createMarkdownIt();
-// Todo: github action 保存
-const client = algoliasearch('HBKI4H8ZHK', '6c0aec698c7065f93177b600cd090942');
+const client = algoliasearch('HBKI4H8ZHK', process.env.ALGOLIA_KEY);
 const index = client.initIndex('docschina_docs');
 
 function getHeadings(tokens, pointers) {

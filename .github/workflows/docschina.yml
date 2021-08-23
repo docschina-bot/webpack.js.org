@@ -1,0 +1,29 @@
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - yunfeng/cn
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install
+        run: |
+          cd scripts
+          yarn
+      - name: Sync
+        run: |
+          yarn run sync
+        env:
+          TENCENT_SECRET_KEY: ${{secrets.TENCENT_SECRET_KEY}}
+          ALGOLIA_KEY: ${{secrets.ALGOLIA_KEY}}
