@@ -1,3 +1,7 @@
+name: Sync content to docschina
+
+working-directory: ./scripts
+
 on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
@@ -19,7 +23,6 @@ jobs:
 
       - name: Install
         run: |
-          cd scripts
           yarn
       - name: Sync
         run: |
