@@ -1,7 +1,7 @@
 {
   "name": "scripts",
   "version": "1.0.0",
-  "description": "",
+  "description": "webpack docs sync to docschina cms and algolia",
   "main": "sync-to-cms.js",
   "scripts": {
     "sync": "node sync-to-cms.js",
