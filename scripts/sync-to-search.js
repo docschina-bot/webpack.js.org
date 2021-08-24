@@ -84,7 +84,7 @@ function getSearchData(doc) {
   const data = segments.map((segment) => {
     const item = {
       hierarchy: {
-        lvl0: doc.title,
+        lvl0: doc.title || null,
         lvl1: segment.h1 ? segment.h1.text : null,
         lvl2: segment.h2 ? segment.h2.text : null,
         lvl3: segment.h3 ? segment.h3.text : null,
