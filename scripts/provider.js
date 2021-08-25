@@ -96,10 +96,8 @@ async function addDocuments(data) {
     return;
   }
 
-  const transaction = await db.startTransaction();
-
   if (addDocs.length) {
-    const addResult = await transaction.collection(DOCUMENT).add(addDocs);
+    const addResult = await db.collection(DOCUMENT).add(addDocs);
     console.log('addResult', addResult.ids || addResult.id); // 打印添加的docId
   }
 
@@ -108,7 +106,7 @@ async function addDocuments(data) {
     const id = updateDoc._id;
     delete updateDoc._id;
 
-    const updateResult = await transaction
+    const updateResult = await db
       .collection(DOCUMENT)
       .doc(id)
       .update(updateDoc);
@@ -119,17 +117,13 @@ async function addDocuments(data) {
   for (let i = 0; i < deleteDocs.length; i++) {
     const deleteDoc = deleteDocs[i];
 
-    const deleteResult = await transaction
+    const deleteResult = await db
       .collection(DOCUMENT)
       .doc(deleteDoc._id)
       .delete();
 
     console.log('deleteResult', deleteResult.deleted); // 删除成功的条数
   }
-
-  // debug 时就回滚
-  // await transaction.rollback();
-  await transaction.commit();
 
   await syncAlgolia({
     addDocs,
