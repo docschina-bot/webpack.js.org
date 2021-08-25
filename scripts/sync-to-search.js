@@ -140,7 +140,7 @@ function deleteRecordToSearch(docs) {
 
   index
     .deleteBy({
-      facetFilters,
+      facetFilters: [facetFilters],
     })
     .then(() => {
       // done
@@ -157,16 +157,18 @@ function updateRecordToSearch(docs) {
     .reduce((res, doc) => {
       return res.concat(getSearchData(doc));
     }, [])
-    .slice(0, 5000);
+    .slice(0, 10000);
 
   const facetFilters = docs.map((doc) => `url:${getUrl(doc.path)}`);
 
   // 先删后加
   index
     .deleteBy({
-      facetFilters,
+      facetFilters: [facetFilters],
     })
-    .then(() => {
+    .then(async ({ taskID: deleteTaskID }) => {
+      await index.waitTask(deleteTaskID);
+
       // done
       index.addObjects(data);
       console.info(
