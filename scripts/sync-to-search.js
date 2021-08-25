@@ -120,6 +120,10 @@ async function syncAlgolia(param) {
 }
 
 function addRecordToSearch(docs) {
+  if (!docs.length) {
+    return;
+  }
+
   let data = docs.reduce((res, doc) => {
     return res.concat(getSearchData(doc));
   }, []);
@@ -129,6 +133,9 @@ function addRecordToSearch(docs) {
 }
 
 function deleteRecordToSearch(docs) {
+  if (!docs.length) {
+    return;
+  }
   const facetFilters = docs.map((doc) => `url:${getUrl(doc.path)}`);
 
   index
@@ -142,9 +149,15 @@ function deleteRecordToSearch(docs) {
 }
 
 function updateRecordToSearch(docs) {
-  let data = docs.reduce((res, doc) => {
-    return res.concat(getSearchData(doc));
-  }, []);
+  if (!docs.length) {
+    return;
+  }
+
+  let data = docs
+    .reduce((res, doc) => {
+      return res.concat(getSearchData(doc));
+    }, [])
+    .slice(0, 5000);
 
   const facetFilters = docs.map((doc) => `url:${getUrl(doc.path)}`);
 
@@ -156,7 +169,9 @@ function updateRecordToSearch(docs) {
     .then(() => {
       // done
       index.addObjects(data);
-      console.info(`update record to search success: ${docs.length} docs`);
+      console.info(
+        `update record to search success: ${docs.length} docs, items: ${data.length}`
+      );
     });
 }
 
